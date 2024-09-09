@@ -1,91 +1,110 @@
-import React, { useState } from "react";
+import React, { useState } from 'react';
+import { TextField, Button, Typography, Grid, ThemeProvider, createTheme } from '@mui/material';
+import { motion } from 'framer-motion'; // for animations
+import axios from 'axios';
+import Cookies from 'universal-cookie';
 
-import { Avatar, Box, Button, Container, TextField, ThemeProvider, Typography } from "@mui/material";
-import { createTheme } from "@mui/material";
-import axios from "axios";
-import { green } from "@mui/material/colors";
-import Cookies from "universal-cookie";
 
-const defaultTheme = createTheme({
+// Custom theme setup
+const customTheme = createTheme({
   palette: {
     primary: {
-      main: "#192D6E",
+      main: '#27245f', // Accent color (10%)
     },
-    secondary: {
-      main: green[500],
+    background: {
+      default: '#f9f9f9', // 60% white shades
+      paper: '#e5e5e5',   // 30% natural tones
+    },
+    text: {
+      primary: '#333333',  // Dark grey for text
+    },
+  },
+});
+
+export function Login() {
+  const [data, setData] = useState({
+    email: '',
+    password: '',
+  });
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setData((prevData) => ({ ...prevData, [name]: value }));
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const res = await axios.post('http://localhost:3000/login', data);
+
+      if( res.status === 200){
+        const token = res.data;
+        const Cookie = new Cookies();
+        Cookie.set('Auth', token);
+        window.location.href = "http://localhost:5173/"
+        alert("Welcome Back!");
+        return null;
+      }
+    } catch (err) {
+      alert("Invalid Credentials!")
     }
-  }
-})
+  };
 
-
-export const Login = () => {
-    document.title = "Login"
-
-    const [data, setData] = useState({
-      email: "",
-      password: ""
-    });
-    const handleSubmit = async (e) => {
-        e.preventDefault()
-        try {
-          const response = await axios.post(`http://localhost:3000/login`, data);
-
-          //Check if the response status is 200
-          if(response.status === 200){
-            
-            //Extract the token from the res data
-            const token = response.data;
-            const Cookie = new Cookies(); 
-            Cookie.set('Auth', token);
-
-            // document.cookie = `Auth=${token}; Max-Age=3600; Secure`;
-
-
-            //store the token in the browser's local storage
-            //localStorage.setItem("Auth", token);
-            //console.log(token);
-
-            // Redirect after successful request
-            window.location.href = "/";
-            alert("welcome Back"); 
-          }
-        } catch (err) {
-          console.error("Error occured during login", err);
-        }
-    }
-
-    return (
-        <>
-              <ThemeProvider theme={defaultTheme}>
-                <Container sx={{ my: "15px"}} maxWidth="md">
-                  <form onSubmit={ e => handleSubmit(e)} className="mx-0" >
-                    <Box sx={{ marginTop: 8, display: "flex", flexDirection: "column", alignItems: "center", boxShadow: 2, py:4, mx:0 }}>
-                      {/* <Avatar> 
-                        <AdminPanelSettingsIcon fontSize="medium" color="primary"/>
-                      </Avatar> */}
-                      <Typography className="font-semibold text-[#192D6E]" variant="h4" sx={{ mt:3, mx:0 }}>
-                        Login
-                    </Typography>
-                    <Typography variant="body2" component="div" sx={{ mt:5, mx:0 }}>
-                      <TextField variant="standard" label="Email" required name="email" type="email" value={data.email} onChange={ e => setData({...data, email: e.target.value})} autoComplete="True" />
-                    </Typography>
-                    <Typography variant="body2" component="div" sx={{ mt:5, mx:0 }}>
-                      <TextField variant="standard" label="Password" required name="password" type="password" value={data.password} onChange={ e => setData({...data, password: e.target.value})} autoComplete="True" />
-                    </Typography>
-                      <div className="flex justify-center">
-                        <Button variant="cpmtaomed" sx={{ mt:5, bgcolor: "192D6E", px:4, py:1, mx:0 }} type="submit">
-                          <span className="flex justify-center items-center">
-                            Submit
-                          </span>
-                        </Button>
-                      </div>
-                      <Typography sx={{ mt:2 }}>
-                        <a href="/signup" className="underline-none text-blue-500">Don't have an account? Signup </a>
-                      </Typography>
-                    </Box>
-                  </form>
-                </Container>
-              </ThemeProvider>
-        </>
-    )
+  return (
+    <ThemeProvider theme={customTheme}>
+      <div className="min-h-screen flex items-center justify-center bg-gray-100">
+        <Grid container justifyContent="center" alignItems="center" className="min-h-screen">
+          {/* Centered Signup Form */}
+          <Grid item xs={12} md={6} className="flex items-center justify-center bg-gray-50">
+            <motion.div 
+              initial={{ opacity: 0, scale: 0.8 }} 
+              animate={{ opacity: 1, scale: 1 }} 
+              transition={{ duration: 0.5 }}
+              className="p-8 w-full max-w-md border border-gray-300 shadow-lg rounded-lg"
+            >
+              <Typography variant="h5" className="text-gray-800 mb-6">
+                Sign In
+              </Typography>
+              <form className="space-y-4" onSubmit={handleSubmit}>
+                {/* Email */}
+                <TextField 
+                  label="Email Address" 
+                  name="email"
+                  variant="outlined" 
+                  fullWidth 
+                  type="email"
+                  value={data.email}
+                  onChange={handleChange}
+                  className="bg-white"
+                />
+                {/* Password */}
+                <TextField 
+                  label="Password" 
+                  name="password"
+                  variant="outlined" 
+                  fullWidth 
+                  type="password"
+                  value={data.password}
+                  onChange={handleChange}
+                  className="bg-white"
+                />
+                {/* Sign In Button */}
+                <Button 
+                  variant="contained" 
+                  fullWidth 
+                  className="bg-[#27245f] text-white hover:bg-[#1f1b4b]"
+                  type="submit"
+                >
+                  Sign In
+                </Button>
+                <Typography variant="p" className="text-gray-800 mb-6">
+                <a href="/signup"> Dont have an account? Sign Up</a>
+              </Typography>
+              </form>
+            </motion.div>
+          </Grid>
+        </Grid>
+      </div>
+    </ThemeProvider>
+  );
 }

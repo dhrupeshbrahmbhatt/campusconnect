@@ -10,6 +10,7 @@ import { SlCalender } from "react-icons/sl";
 import { LiaDonateSolid } from "react-icons/lia";
 import { Message } from '../components/MessageComponent';
 import { Posts } from "../components/PostComponent";
+import Cookies from "universal-cookie";
 
 // Example components to render
 const MessagesComponent = () => < Message />;
@@ -33,18 +34,26 @@ export const Home = () => {
   const token = document.cookie;
 
   const check_Auth = async () => {
+    console.log(token)
     try {
         const req = await axios.get("http://localhost:3000/profile", {
             headers: {
-                Authorization: "Bearer " + token,
+                Authorization: "Brarer " + token,
                 'Content-Type': 'application/json',
             }
         });
-        if (req.data === 'Access denied') {
-            window.location = "http://localhost:5173/login";
+        console.log(req.data)
+        if (req.status === 200) {
+          const token = req.data;
+          const Cookie = new Cookies();
+          Cookie.set('Auth', token);
+        }
+        else if (req.data === 'Access denied') {
+            //window.location = "http://localhost:5173/login";
         }
     } catch (err) {
-        window.location = "http://localhost:5173/notfound";
+      alert("Not found")
+        //window.location = "http://localhost:5173/notfound";
     }
 }
 

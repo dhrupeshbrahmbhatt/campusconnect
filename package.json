@@ -17,6 +17,7 @@
     "@mui/styled-engine-sc": "^6.0.0-alpha.18",
     "autoprefixer": "^10.4.20",
     "axios": "^1.7.4",
+    "framer-motion": "^11.5.4",
     "jsonwebtoken": "^9.0.2",
     "postcss": "^8.4.41",
     "react": "^18.3.1",

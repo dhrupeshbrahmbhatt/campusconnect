@@ -7,14 +7,14 @@ import { NotFound } from './pages/NotFound'
 
 function App() {
 
-
   return (
     <>
       <BrowserRouter>
         <Routes>
           <Route path='/' element={<Home />} />
-          <Route path='/login' element={<Login />} />
-          <Route path='/signup' element={<Signup />} />
+          <Route path='/user/:acc_no' element={<Home />} />
+          <Route path='/signin' element={<Login />} />
+          <Route path='/signup' element={<Signup isDarkMode='false' />} />
           <Route path='*' element={<NotFound /> } />
         </Routes>
       </BrowserRouter>

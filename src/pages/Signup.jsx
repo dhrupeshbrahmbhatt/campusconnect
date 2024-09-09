@@ -1,76 +1,167 @@
-import React, { useState } from "react";
-import axios from "axios";
-import { Avatar, Container, TextField, ThemeProvider, Typography, Box, createTheme, Button } from "@mui/material";
-import { green } from "@mui/material/colors";
-import { AdminPanelSettings } from "@mui/icons-material";
+import React, { useState } from 'react';
+import { TextField, Button, Typography, Grid, ThemeProvider, createTheme } from '@mui/material';
+import { motion } from 'framer-motion'; // for animations
+import axios from 'axios';
 
-const defaultTheme = createTheme({
-    paletts: {
-        primary: {
-            main: "#192D6E",
-        },
-        secondary: {
-            main: green[500],
-        },
+// Custom theme setup with new color scheme
+const customTheme = createTheme({
+  palette: {
+    primary: {
+      main: '#27245f', // Accent color
     },
-})
+    background: {
+      default: '#FFFFFF', // Dominant white shade for the background
+      paper: '#F5F5F5',   // Lighter white shades
+    },
+    secondary: {
+      main: '#E5E5E5', // Natural tones for form and text fields
+    },
+    text: {
+      primary: '#333333', // Dark grey for readability
+      secondary: '#27245f', // Accent for important text
+    },
+  },
+});
 
-export const Signup = () => {
-    document.title = "Signup"
-    const [data, setData] = useState({
-        // name: "",
-        email: "",
-        password: ""
+export function Signup({ isDarkMode }) {
+  const [data, setData] = useState({
+    firstName: '',
+    lastName: '',
+    email: '',
+    password: '',
+    phoneNumber: '',
+  });
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setData((prevData) => ({ ...prevData, [name]: value }));
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    console.log(data); // Handle form data
+    await axios.post('http://localhost:3000/signup', data).then((res)=> {
+      if (res.status === 200) {
+        window.location.href = "/"
+        alert("Welcome!");
+      } else {
+        alert("Invalid credentials, please try again.");
+      }
     });
+    console.log(data); // Handle form data
+  };
 
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-        await axios.post('http://localhost:3000/register', data).then( (req) => {
-            if(req.status === 200){
-                window.location.href="/";
-                alert("Welcome to Our App!");
-            } else {
-                alert("Check your credentials..")
-            }
-        })
-    }
-    return (
-        <>
-            <ThemeProvider theme={defaultTheme}>
-                <Container sx={{ my: "15px" }} maxWidth="md">
-                    <form onSubmit={ e => handleSubmit(e)} className="mx-0">
-                        <Box sx={{ marginTop: 8, display: "flex", flexDirection: "column", alignItems: "center", boxShadow: 2, py:4, mx:0 }} >
-                            <Avatar>
-                                <AdminPanelSettings fontSize="medium" color="primary" />
-                            </Avatar>
-                            <Typography className="font-semibold text-[#192D6E]" variant="h4" >
-                                Sign up
-                            </Typography>
-                            {/* <Typography variant="body2" component="div" sx={{ mt:5, mx:0 }}>
-                                <TextField variant="standard" label="Name" required name="name" value={data.name} onChange={ e => setData({...data, name:e.target.value})} />
-                            </Typography> */}
-                            <Typography variant="body2" component="div" sx={{ mt:5, mx:0 }}>
-                                <TextField  variant="standard" label="Email" required type="email" value={data.email} onChange={ e => setData({...data, email:e.target.value})} />
-                            </Typography>
-                            <Typography variant="body2" component="div" sx={{ mt:5, mx:0 }}>
-                                <TextField  variant="standard" label="Password" required type="password" value={data.password} onChange={ e => setData({...data, password:e.target.value})} />
-                            </Typography>
-                            <div className="flex justify-center">
-                                <Button variant="contained" sx={{ mt:5, bgcolor: "192D6E", px:4, py:1, mx:0 }} type="submit"> 
-                                    <span className="flex justify-center items-center">
-                                        Submit
-                                    </span>
-                                </Button>
-                            </div>
-                            <Typography sx={{ mt:3 }}>
-                                <a href="/login" className="underline-none text-blue-500">
-                                    Already have an account ? Login
-                                </a>
-                            </Typography>
-                        </Box>
-                    </form>
-                </Container>
-            </ThemeProvider>
-        </>
-    )
+  return (
+    <ThemeProvider theme={customTheme}>
+      <div className="min-h-screen flex items-center justify-center bg-gray-100">
+        <Grid container>
+          {/* Left Side: Display Website Content */}
+          <Grid item xs={12} md={6} className="hidden md:flex items-center justify-center bg-secondary-main">
+            <div className="p-8">
+              <Typography variant="h4" className="text-primary-main mb-4">
+                Welcome to CampusConnect!
+              </Typography>
+              <Typography variant="body1" className="text-gray-600">
+                Experience seamless communication and networking with our innovative features.
+              </Typography>
+            </div>
+          </Grid>
+
+          {/* Right Side: Signup Form */}
+          <Grid item xs={12} md={6} className="flex items-center justify-center bg-background-default">
+            {/* Animated signup form */}
+            <motion.div 
+              initial={{ opacity: 0, scale: 0.8 }} 
+              animate={{ opacity: 1, scale: 1 }} 
+              transition={{ duration: 0.5 }}
+              className="p-8 w-full max-w-md border border-gray-300 shadow-lg rounded-lg"
+            >
+              <Typography variant="h5" className="text-primary-main mb-6">
+                Create Your Account
+              </Typography>
+              <form className="space-y-4" onSubmit={handleSubmit}>
+                {/* First Name */}
+                <TextField 
+                  label="First Name" 
+                  name="firstName"
+                  variant="standard" 
+                  fullWidth 
+                  value={data.firstName}
+                  onChange={handleChange}
+                  InputLabelProps={{
+                    style: { color: '#27245f' }, // Accent color for the label
+                  }}
+                />
+                {/* Last Name */}
+                <TextField 
+                  label="Last Name" 
+                  name="lastName"
+                  variant="standard" 
+                  fullWidth 
+                  value={data.lastName}
+                  onChange={handleChange}
+                  InputLabelProps={{
+                    style: { color: '#27245f' }, // Accent color for the label
+                  }}
+                />
+                {/* Email */}
+                <TextField 
+                  label="Email Address" 
+                  name="email"
+                  variant="standard" 
+                  fullWidth 
+                  type="email"
+                  value={data.email}
+                  onChange={handleChange}
+                  InputLabelProps={{
+                    style: { color: '#27245f' }, // Accent color for the label
+                  }}
+                />
+                {/* Password */}
+                <TextField 
+                  label="Password" 
+                  name="password"
+                  variant="standard" 
+                  fullWidth 
+                  type="password"
+                  value={data.password}
+                  onChange={handleChange}
+                  InputLabelProps={{
+                    style: { color: '#27245f' }, // Accent color for the label
+                  }}
+                />
+                {/* Confirm Password */}
+                <TextField 
+                  label="Phone Number." 
+                  name="phoneNumber"
+                  variant="standard" 
+                  fullWidth 
+                  type="password"
+                  value={data.phoneNumber}
+                  onChange={handleChange}
+                  InputLabelProps={{
+                    style: { color: '#27245f' }, // Accent color for the label
+                  }}
+                />
+                {/* Signup Button */}
+                <Button 
+                  variant="contained" 
+                  fullWidth 
+                  color="primary"
+                  className="text-white hover:bg-primary-dark"
+                  type="submit"
+                >
+                  Sign Up
+                </Button>
+              </form>
+
+              <Typography variant="body2" className="text-gray-600 mt-4">
+                Already have an account? <a href="signin" className="text-primary-main">Sign In</a>
+              </Typography>
+            </motion.div>
+          </Grid>
+        </Grid>
+      </div>
+    </ThemeProvider>
+  );
 }
