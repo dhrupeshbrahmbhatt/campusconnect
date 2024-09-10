@@ -42,13 +42,7 @@ export const Home = () => {
                 'Content-Type': 'application/json',
             }
         });
-        console.log(req.data)
-        if (req.status === 200) {
-          const token = req.data;
-          const Cookie = new Cookies();
-          Cookie.set('Auth', token);
-        }
-        else if (req.data === 'Access denied') {
+        if (req.data === 'Access denied') {
             //window.location = "http://localhost:5173/login";
         }
     } catch (err) {

@@ -13,12 +13,13 @@ app.use(express.urlencoded({extended: true}));
 app.use(cors());
 
 // Connect to MongoDB
-mongoose.connect(process.env.DB_URL, { useNewUrlParser: true, useUnifiedTopology: true })
+mongoose.connect(process.env.DB_URL)
   .then(() => console.log("Server connected to DB..."))
   .catch(err => console.log("Error in MongoDB connection: " + err));
 
 app.post("/login", async (req, res) => {
     try {
+      console.log("Req data: " + req.data);
       const user = await User.findOne({ email: req.body.email });
       
       if (!user) return res.status(401).send('User Not Found');
@@ -136,19 +137,22 @@ app.get("/$chatId/message", verifyToken, (req, res) => {
 })
 
 async function verifyToken(req, res, next) {
+  console.log("starting verify");
     const token = req.header('Authorization') && req.header('Authorization').split('=')[1];
-    console.log(token);
+    console.log("Token" +token);
     if (!token) return res.status(401).send("Access denied");
     
     try {
       const decodedPayload = jwt.verify(token, process.env.SECRETKEY);
       console.log(decodedPayload);
       req.user = decodedPayload;
+      console.log("clear verify");
+
       next(); 
     } catch (err) {
       console.log(err); // log the error for debugging
       return res.status(401).send("Invalid token"); 
     }
-}
+  }
   
 app.listen(3000, () => console.log("Server Started..."));
