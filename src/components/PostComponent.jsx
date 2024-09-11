@@ -1,7 +1,8 @@
-import {React, useState} from 'react';
+import {React, useEffect, useState} from 'react';
 import { Box, Typography, Avatar, Paper, Container } from '@mui/material';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { green } from '@mui/material/colors';
+import { Post_temp } from "../components/Posts"
 
 // Custom theme
 const defaultTheme = createTheme({
@@ -38,6 +39,11 @@ export const Posts = () => {
         setPostDetails({ title: "", content: "" });
         handleClose();
     };
+
+    useEffect(()=> {
+      
+    })
+
     return (
         <Container sx={{ margin: '0', padding: '0' }}>
       <Box sx={{ backgroundColor: defaultTheme.palette.background.default, padding: "20px", display: 'flex', justifyContent: 'space-around', minHeight: '100vh' }}>
@@ -54,42 +60,13 @@ export const Posts = () => {
 
         {/* Main Content */}
         <Box sx={{ width: '50%', backgroundColor: '#F0F0F6', padding: "10px", borderRadius: '8px' }}>
-          <Paper elevation={3} sx={{ padding: '10px', marginBottom: '20px' }}>
-            <Box sx={{ display: 'flex', alignItems: 'center', marginBottom: '10px' }}>
-              <Avatar sx={{ bgcolor: '#4849A1', width: 40, height: 40, marginRight: '10px' }} />
-              <Typography variant="body1" sx={{ fontWeight: 'bold' }}>This is first post about my job.</Typography>
-            </Box>
-            <Typography variant="body2">#job #firstday #new</Typography>
-          </Paper>
-          <Paper elevation={3} sx={{ padding: '10px', marginBottom: '20px' }}>
-            <Box sx={{ display: 'flex', alignItems: 'center', marginBottom: '10px' }}>
-              <Avatar sx={{ bgcolor: '#4849A1', width: 40, height: 40, marginRight: '10px' }} />
-              <Typography variant="body1" sx={{ fontWeight: 'bold' }}>This is first post about my job.</Typography>
-            </Box>
-            <Typography variant="body2">#job #firstday #new</Typography>
-          </Paper>
-          <Paper elevation={3} sx={{ padding: '10px', marginBottom: '20px' }}>
-            <Box sx={{ display: 'flex', alignItems: 'center', marginBottom: '10px' }}>
-              <Avatar sx={{ bgcolor: '#4849A1', width: 40, height: 40, marginRight: '10px' }} />
-              <Typography variant="body1" sx={{ fontWeight: 'bold' }}>This is first post about my job.</Typography>
-            </Box>
-            <Typography variant="body2">#job #firstday #new</Typography>
-          </Paper>
-          <Paper elevation={3} sx={{ padding: '10px', marginBottom: '20px' }}>
-            <Box sx={{ display: 'flex', alignItems: 'center', marginBottom: '10px' }}>
-              <Avatar sx={{ bgcolor: '#4849A1', width: 40, height: 40, marginRight: '10px' }} />
-              <Typography variant="body1" sx={{ fontWeight: 'bold' }}>This is first post about my job.</Typography>
-            </Box>
-            <Typography variant="body2">#job #firstday #new</Typography>
-          </Paper>
-          <Paper elevation={3} sx={{ padding: '10px', marginBottom: '20px' }}>
-            <Box sx={{ display: 'flex', alignItems: 'center', marginBottom: '10px' }}>
-              <Avatar sx={{ bgcolor: '#4849A1', width: 40, height: 40, marginRight: '10px' }} />
-              <Typography variant="body1" sx={{ fontWeight: 'bold' }}>This is first post about my job.</Typography>
-            </Box>
-            <Typography variant="body2">#job #firstday #new</Typography>
-          </Paper>
-
+          {
+            Posts.map((post)=> {
+              return (
+                <Post_temp postTitle={post.title} postContent={post.content} profileImage={post.profileImage} />
+              )
+            })
+          }
         </Box>
 
         {/* Right Sidebar */}

@@ -32,8 +32,12 @@ const User_Schema = new mongoose.Schema(
         university: {
             type: String,
             require: true,
+        },
+        profileImg: {
+            type: String,
+            require: true
         }
-    }
+    } 
 )
 
 const User = mongoose.model("CamConect_Users", User_Schema);
