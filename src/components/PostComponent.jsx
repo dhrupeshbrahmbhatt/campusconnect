@@ -1,81 +1,97 @@
-import {React, useEffect, useState} from 'react';
-import { Box, Typography, Avatar, Paper, Container } from '@mui/material';
-import { createTheme, ThemeProvider } from '@mui/material/styles';
-import { green } from '@mui/material/colors';
-import { Post_temp } from "../components/Posts"
+import React from 'react';
+import { Box, Typography, Avatar, Button, IconButton, Card, CardContent, CardActions, Divider } from '@mui/material';
+import ThumbUpAltIcon from '@mui/icons-material/ThumbUpAlt';
+import CommentIcon from '@mui/icons-material/Comment';
+import ShareIcon from '@mui/icons-material/Share';
 
-// Custom theme
-const defaultTheme = createTheme({
-  palette: {
-    primary: {
-      main: "#192D6E",
-    },
-    secondary: {
-      main: green[500],
-    },
-    background: {
-      default: "#f9f9fc",
-    },
-  },
-  typography: {
-    fontFamily: 'Arial, sans-serif',
-  },
-});
-export const Posts = () => {
-        // State to handle posts and modal visibility
-    const [posts, setPosts] = useState([]);
-    const [open, setOpen] = useState(false);
-    const [postDetails, setPostDetails] = useState({ title: "", content: "" });
+// Replace this with actual demo data (the demoPosts array I gave earlier)
+import { demoPosts } from './demoPosts'; 
 
-    // Function to handle opening the modal
-    const handleOpen = () => setOpen(true);
-
-    // Function to handle closing the modal
-    const handleClose = () => setOpen(false);
-
-    // Function to handle form submission
-    const handleSubmit = () => {
-        setPosts([...posts, postDetails]);
-        setPostDetails({ title: "", content: "" });
-        handleClose();
-    };
-
-    useEffect(()=> {
-      
-    })
-
-    return (
-        <Container sx={{ margin: '0', padding: '0' }}>
-      <Box sx={{ backgroundColor: defaultTheme.palette.background.default, padding: "20px", display: 'flex', justifyContent: 'space-around', minHeight: '100vh' }}>
-        {/* Left Sidebar */}
-        <Box sx={{ width: '20%', backgroundColor: '#F0F0F6', padding: "10px", borderRadius: '15px'}}>
-          <Paper elevation={3} sx={{ padding: '10px 10px 250px', textAlign: 'center', marginBottom: '20px' }}>
-            <Avatar sx={{ bgcolor: '#4849A1', margin: 'auto', width: 56, height: 56 }} />
-            <Typography variant="h6" sx={{ mt: 2 }}>Demo Name</Typography>
-          </Paper>
-          <Paper elevation={3} sx={{ padding: '10px', textAlign: 'center' }}>
-            <Typography variant="h6">Recents</Typography>
-          </Paper>
+const Post = ({ post }) => {
+  return (
+    <Card sx={{ margin: '20px 0', boxShadow: 3 }}>
+      <CardContent>
+        {/* Post header */}
+        <Box display="flex" alignItems="center" mb={2}>
+          <Avatar sx={{ marginRight: '10px' }}>{post.user[0].toUpperCase()}</Avatar>
+          <Box>
+            <Typography variant="h6">{post.user}</Typography>
+            <Typography variant="caption" color="textSecondary">{new Date(post.createdAt).toLocaleString()}</Typography>
+          </Box>
         </Box>
 
-        {/* Main Content */}
-        <Box sx={{ width: '50%', backgroundColor: '#F0F0F6', padding: "10px", borderRadius: '8px' }}>
-          {
-            Posts.map((post)=> {
-              return (
-                <Post_temp postTitle={post.title} postContent={post.content} profileImage={post.profileImage} />
-              )
-            })
-          }
-        </Box>
+        {/* Post content */}
+        <Typography variant="body1" gutterBottom>
+          {post.content}
+        </Typography>
 
-        {/* Right Sidebar */}
-        <Box sx={{ width: '20%', backgroundColor: '#F0F0F6', padding: "10px", borderRadius: '8px' }}>
-          <Paper elevation={3} sx={{ padding: '10px', textAlign: 'center' }}>
-            <Typography variant="h6">Latest News</Typography>
-          </Paper>
+        {/* Post media */}
+        {post.media && (
+          <Box sx={{ marginTop: '10px', textAlign: 'center' }}>
+            <img src={post.media} alt="Post Media" style={{ maxWidth: '100%', maxHeight: '300px', borderRadius: '8px' }} />
+          </Box>
+        )}
+
+        {/* Post hashtags */}
+        <Box sx={{ marginTop: '10px' }}>
+          {post.hashtags && post.hashtags.map((hashtag, index) => (
+            <Typography key={index} variant="caption" color="primary" sx={{ marginRight: '5px' }}>
+              {hashtag}
+            </Typography>
+          ))}
         </Box>
-      </Box>
-        </Container>
-    )
+      </CardContent>
+
+      <CardActions>
+        {/* Like button */}
+        <IconButton aria-label="like">
+          <ThumbUpAltIcon /> 
+          <Typography variant="body2" sx={{ marginLeft: '5px' }}>
+            {post.likes.length} Likes
+          </Typography>
+        </IconButton>
+
+        {/* Comment button */}
+        <IconButton aria-label="comment">
+          <CommentIcon /> 
+          <Typography variant="body2" sx={{ marginLeft: '5px' }}>
+            {post.comments.length} Comments
+          </Typography>
+        </IconButton>
+
+        {/* Share button */}
+        <IconButton aria-label="share">
+          <ShareIcon />
+        </IconButton>
+      </CardActions>
+
+      {/* Comments section */}
+      {post.comments.length > 0 && (
+        <Box sx={{ padding: '10px 20px' }}>
+          <Divider />
+          {post.comments.map((comment, index) => (
+            <Box key={index} sx={{ marginTop: '10px' }}>
+              <Typography variant="subtitle2">{comment.user}</Typography>
+              <Typography variant="body2">{comment.content}</Typography>
+              <Typography variant="caption" color="textSecondary">
+                {new Date(comment.createdAt).toLocaleString()}
+              </Typography>
+            </Box>
+          ))}
+        </Box>
+      )}
+    </Card>
+  );
 };
+
+export const Posts = () => {
+  return (
+    <Box>
+      {demoPosts.map((post, index) => (
+        <Post key={index} post={post} />
+      ))}
+    </Box>
+  );
+};
+
+
